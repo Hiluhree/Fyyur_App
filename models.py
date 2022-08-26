@@ -13,6 +13,7 @@ class Venue(db.Model):
     state = db.Column(db.String(120))
     address = db.Column(db.String(120))
     phone = db.Column(db.String(120))
+    genres = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
     website_link = db.Column(db.String(120))
@@ -20,27 +21,13 @@ class Venue(db.Model):
     seeking_description = db.Column(db.String(120))
 
     artists = db.relationship('Artist', secondary='shows')
-    shows = db.relationship('Show', backref=('venues'))
+    shows = db.relationship('Show', backref=('venues'), lazy=True)
 
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    # DONE: implement any missing fields, as a database migration using Flask-Migrate
 
-    def to_dict(self):
-      return {
-        'id': self.id,
-        'name': self.name,
-        'city': self.city,
-        'state': self.state,
-        'phone': self.phone,
-        'genres': self.genres.split(','), # convert string to list
-        'image_link': self.image_link,
-        'facebook_link': self.facebook_link,
-        'website_link': self.website_link,
-        'seeking_talent': self.seeking_talent,
-        'seeking_description': self.seeking_description
-      }
 
     def __repr__(self):
-      return f'<Venue {self.id} {self.name}>'
+      return f'<Venue: {self.id} {self.name}>'
 
 """ Artist Model """
 class Artist(db.Model):
@@ -59,23 +46,9 @@ class Artist(db.Model):
     seeking_description = db.Column(db.String(120)) #Adding seeking description field
 
     venues = db.relationship('Venue', secondary='shows')
-    shows = db.relationship('Show', backref=('artists'))
+    shows = db.relationship('Show', backref=('artists'), lazy=True)
 
-    def to_dict(self):
-      return {
-        'id': self.id,
-        'name': self.name,
-        'city': self.city,
-        'state': self.state,
-        'phone': self.phone,
-        'genres': self.genres.split(','), # convert string to list
-        'image_link': self.image_link,
-        'facebook_link': self.facebook_link,
-        'website_link': self.website_link,
-        'seeking_venue': self.seeking_venue,
-        'seeking_description': self.seeking_description
-      }
-
+    
     def __repr__(self):
       return f'<Artist {self.id} {self.name}>'
 
@@ -96,8 +69,7 @@ class Show(db.Model):
     return {
       'artist_id': self.artist_id,
       'artist_name': self.artist.name,
-      'artist_image_link': self.artist.image_link,
-      #code to convert datetime to string
+      'artist_image_link': self.artist.image_link, #code to convert datetime to string
       'start_time': self.start_time.strftime('%Y-%m-%d %H:%M:%S')
     }
 
@@ -105,12 +77,11 @@ class Show(db.Model):
     return {
       'venue_id': self.venue_id,
       'venue_name': self.venue.name,
-      'venue_image_link': self.venue.image_link,
-      #code to convert datetime to string
+      'venue_image_link': self.venue.image_link, #code to convert datetime to string
       'start_time': self.start_time.strftime('%Y-%m-%d %H:%M:%S')
     }
   
 
-    # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    # DONE: implement any missing fields, as a database migration using Flask-Migrate
 
-# TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
+# DONE Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
